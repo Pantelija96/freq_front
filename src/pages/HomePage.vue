@@ -186,22 +186,31 @@ async function loadDevices() {
 function initCharts() {
   devicesChart = window.echarts.init(devicesChartEl.value);
   devicesChart.setOption({
-    backgroundColor: "#1e1e1e",
+    backgroundColor: "#12284f",
     tooltip: { trigger: "axis" },
     legend: { textStyle: { color: "#fff" } },
-    xAxis: { type: "time", axisLabel: { color: "#aaa" } },
-    yAxis: { type: "value", axisLabel: { color: "#aaa" } },
+    xAxis: {
+      type: "time",
+      axisLabel: { color: "#d6e3ff" },
+      splitLine: { lineStyle: { color: "rgba(173, 194, 255, 0.16)" } },
+    },
+    yAxis: {
+      type: "value",
+      axisLabel: { color: "#d6e3ff" },
+      splitLine: { lineStyle: { color: "rgba(173, 194, 255, 0.16)" } },
+    },
     series: [],
   });
 
   groupPieChart = window.echarts.init(groupPieEl.value);
   groupPieChart.setOption({
-    backgroundColor: "#1e1e1e",
+    backgroundColor: "#12284f",
     tooltip: { trigger: "item" },
     series: [
       {
         type: "pie",
         radius: "70%",
+        color: ["#3e5ea7", "#6f92e8", "#1b335f", "#4f7de0", "#86b8ff"],
         data: [],
       },
     ],
@@ -227,6 +236,10 @@ function updateChart() {
     type: "line",
     data: chartSeries[groupName],
     smooth: false,
+    lineStyle: {
+      width: 3,
+    },
+    showSymbol: false,
   }));
 
   devicesChart.setOption({ series });
@@ -611,9 +624,9 @@ async function showAlert(icon, title, text) {
       icon,
       title,
       text,
-      background: "#111",
-      color: "#f5f5f5",
-      confirmButtonColor: "#0d6efd",
+      background: "#12284f",
+      color: "#eef4ff",
+      confirmButtonColor: "#3e5ea7",
     });
   }
 

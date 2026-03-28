@@ -4,6 +4,14 @@
     :class="{ 'sidebar-mobile-expanded': mobileOpen }"
   >
     <div class="sidebar-content">
+      <div class="sidebar-brand-panel">
+        <img src="/freq-logo.jfif" alt="Freq logo" class="sidebar-brand-logo" />
+        <div>
+          <div class="sidebar-brand-title">Device Efficiency</div>
+          <div class="sidebar-brand-subtitle">Frontend Console</div>
+        </div>
+      </div>
+
       <div class="sidebar-section">
         <div class="sidebar-section-body d-flex justify-content-center">
           <h5 class="sidebar-resize-hide flex-grow-1 my-auto">Navigation</h5>

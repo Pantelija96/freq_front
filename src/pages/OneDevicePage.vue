@@ -453,19 +453,19 @@ function ensureCpuChart() {
 
   cpuChart = window.echarts.init(cpuChartEl.value);
   cpuChart.setOption({
-    backgroundColor: "#111",
+    backgroundColor: "#12284f",
     tooltip: { trigger: "axis" },
     legend: { textStyle: { color: "#fff" } },
     grid: { top: 50, left: 60, right: 30, bottom: 50 },
     xAxis: {
       type: "time",
-      axisLabel: { color: "#aaa" },
-      splitLine: { lineStyle: { color: "rgba(255,255,255,0.05)" } },
+      axisLabel: { color: "#d6e3ff" },
+      splitLine: { lineStyle: { color: "rgba(173, 194, 255, 0.16)" } },
     },
     yAxis: {
       type: "value",
-      axisLabel: { color: "#aaa", formatter: (value) => `${value / 1000} MHz` },
-      splitLine: { lineStyle: { color: "rgba(255,255,255,0.05)" } },
+      axisLabel: { color: "#d6e3ff", formatter: (value) => `${value / 1000} MHz` },
+      splitLine: { lineStyle: { color: "rgba(173, 194, 255, 0.16)" } },
     },
     series: [],
   });
@@ -483,7 +483,7 @@ function updateCpuChart(series) {
     showSymbol: false,
     lineStyle: {
       width: 3,
-      color: entry.name.includes("Small") ? "#3498db" : "#e74c3c",
+      color: entry.name.includes("Small") ? "#6f92e8" : "#80dcff",
     },
   }));
 
@@ -781,9 +781,9 @@ async function showAlert(icon, title, text) {
       icon,
       title,
       text,
-      background: "#111",
-      color: "#f5f5f5",
-      confirmButtonColor: "#0d6efd",
+      background: "#12284f",
+      color: "#eef4ff",
+      confirmButtonColor: "#3e5ea7",
     });
   }
 

@@ -17,8 +17,10 @@
                 <div class="card-body">
                   <div class="text-center mb-3">
                     <div
-                      class="d-inline-flex align-items-center justify-content-center mb-4 mt-2"
+                      class="d-inline-flex flex-column align-items-center justify-content-center mb-4 mt-2 gap-2"
                     >
+                      <img src="/freq-logo.jfif" alt="Freq logo" class="login-logo" />
+                      <div class="app-brand-eyebrow app-brand-eyebrow-dark">Freq Suite</div>
                       <h3 class="mb-0">Device Efficiency Management</h3>
                     </div>
                     <h5 class="mb-0">Login to your account</h5>

@@ -282,9 +282,9 @@ async function showAlert(icon, title, text) {
       icon,
       title,
       text,
-      background: "#111",
-      color: "#f5f5f5",
-      confirmButtonColor: "#0d6efd",
+      background: "#12284f",
+      color: "#eef4ff",
+      confirmButtonColor: "#3e5ea7",
     });
   }
 
