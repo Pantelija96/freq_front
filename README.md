@@ -63,18 +63,6 @@ VITE_WS_BASE_URL=wss://127.0.0.1:3000/dashboard
 
 For remote testing, point these values to your public backend host.
 
-## Backend Requirements
-
-This frontend expects the backend project to provide:
-
-- JWT login via `/api/auth/login`
-- dashboard REST endpoints under `/api/dashboard`
-- dashboard WebSocket endpoint
-
-The backend repo used during development lives separately in:
-
-- `C:\Users\PC\Desktop\freq`
-
 ## Main Pages
 
 - `/` or `/login` - Login
@@ -82,9 +70,3 @@ The backend repo used during development lives separately in:
 - `/licences` - Licences
 - `/device` - Report generator
 - `/one-device?id=<deviceId>` - One-device statistics
-
-## Notes
-
-- Limitless assets are served from `public/assets` and `public/assets2`
-- The UI is intentionally close to the older HTML version to make migration safer
-- Some pages still use DataTables/jQuery-style integrations while preserving the Vue app structure
