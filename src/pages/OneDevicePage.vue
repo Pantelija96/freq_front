@@ -62,6 +62,16 @@
                   {{ device?.online ? "ONLINE" : "OFFLINE" }}
                 </span>
               </small>
+              <div class="mt-2">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-light"
+                  :disabled="reportLoading"
+                  @click="downloadDeviceReport"
+                >
+                  {{ reportLoading ? "Generating Report..." : "Generate Report" }}
+                </button>
+              </div>
             </div>
 
             <div v-if="isAdmin" class="d-flex gap-2 flex-wrap">
@@ -324,6 +334,8 @@ const device = ref(null);
 const deviceOptions = ref([]);
 const commands = ref([]);
 const sendingCommand = ref(false);
+const reportLoading = ref(false);
+const CPU_OVERLAP_OFFSET_KHZ = 12000;
 const cpuSummary = ref({
   total_observed_ms: 0,
   fixed_time_ms: 0,
@@ -454,7 +466,30 @@ function ensureCpuChart() {
   cpuChart = window.echarts.init(cpuChartEl.value);
   cpuChart.setOption({
     backgroundColor: "#12284f",
-    tooltip: { trigger: "axis" },
+    tooltip: {
+      trigger: "axis",
+      formatter(params) {
+        const lines = [];
+        const seen = new Set();
+
+        params.forEach((param, index) => {
+          const rawValue = param.data?.rawValue ?? param.value?.[1] ?? param.value;
+          const label = `${param.seriesName}-${rawValue}`;
+          if (seen.has(label)) {
+            return;
+          }
+          seen.add(label);
+
+          if (index === 0) {
+            lines.push(new Date(param.value[0]).toLocaleString());
+          }
+
+          lines.push(`${param.marker}${param.seriesName}: ${(Number(rawValue) / 1000).toFixed(1)} MHz`);
+        });
+
+        return lines.join("<br>");
+      },
+    },
     legend: { textStyle: { color: "#fff" } },
     grid: { top: 50, left: 60, right: 30, bottom: 50 },
     xAxis: {
@@ -477,7 +512,8 @@ function updateCpuChart(series) {
     return;
   }
 
-  const mappedSeries = series.map((entry) => ({
+  const adjustedSeries = buildSeparatedSeries(series);
+  const mappedSeries = adjustedSeries.map((entry) => ({
     ...entry,
     type: "line",
     showSymbol: false,
@@ -515,11 +551,95 @@ function appendFrequencyBatch(batch) {
 
     return {
       ...series,
-      data: existingData.slice(-400),
+      data: existingData
+        .slice(-400)
+        .map((point) => ({
+          value: point,
+          rawValue: point[1],
+        })),
     };
   });
 
-  cpuChart.setOption({ series: nextSeries });
+  const rawSeries = nextSeries.map((series) => ({
+    name: series.name,
+    data: (series.data || []).map((point) => point.value || point),
+  }));
+  const adjustedSeries = buildSeparatedSeries(rawSeries).map((series, index) => ({
+    ...nextSeries[index],
+    data: series.data,
+  }));
+
+  cpuChart.setOption({ series: adjustedSeries });
+}
+
+function buildSeparatedSeries(series) {
+  const smallSeries = series.find((entry) => entry.name.includes("Small"));
+  const bigSeries = series.find((entry) => entry.name.includes("Big"));
+
+  if (!smallSeries || !bigSeries) {
+    return series.map((entry) => ({
+      ...entry,
+      data: (entry.data || []).map((point) => normalizeChartPoint(point)),
+    }));
+  }
+
+  const smallMap = new Map(
+    (smallSeries.data || []).map((point) => {
+      const normalized = normalizeChartPoint(point);
+      return [normalized.value[0], normalized.rawValue];
+    }),
+  );
+  const bigMap = new Map(
+    (bigSeries.data || []).map((point) => {
+      const normalized = normalizeChartPoint(point);
+      return [normalized.value[0], normalized.rawValue];
+    }),
+  );
+
+  return series.map((entry) => {
+    const isSmall = entry.name.includes("Small");
+    const isBig = entry.name.includes("Big");
+
+    return {
+      ...entry,
+      data: (entry.data || []).map((point) => {
+        const normalized = normalizeChartPoint(point);
+        const timestamp = normalized.value[0];
+        const ownRawValue = normalized.rawValue;
+
+        if (isSmall && bigMap.get(timestamp) === ownRawValue) {
+          return {
+            ...normalized,
+            value: [timestamp, ownRawValue - CPU_OVERLAP_OFFSET_KHZ],
+          };
+        }
+
+        if (isBig && smallMap.get(timestamp) === ownRawValue) {
+          return {
+            ...normalized,
+            value: [timestamp, ownRawValue + CPU_OVERLAP_OFFSET_KHZ],
+          };
+        }
+
+        return normalized;
+      }),
+    };
+  });
+}
+
+function normalizeChartPoint(point) {
+  if (Array.isArray(point)) {
+    return {
+      value: point,
+      rawValue: point[1],
+    };
+  }
+
+  return {
+    ...point,
+    value: Array.isArray(point.value) ? point.value : [point.x, point.y],
+    rawValue: point.rawValue ?? point.value?.[1] ?? point.y ?? null,
+  };
 }
 
 async function sendCommand(command) {
@@ -562,6 +682,49 @@ async function sendCommand(command) {
     );
   } finally {
     sendingCommand.value = false;
+  }
+}
+
+async function downloadDeviceReport() {
+  if (!deviceId.value) {
+    return;
+  }
+
+  reportLoading.value = true;
+
+  try {
+    const response = await authFetch(buildApiUrl("/dashboard/report/devices"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        deviceIds: [deviceId.value],
+      }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+      throw new Error(data?.error || `Report request failed with status ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `device-${deviceId.value}-report-${Date.now()}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    await showAlert(
+      "error",
+      "Report failed",
+      error.message || "Failed to generate the device report.",
+    );
+  } finally {
+    reportLoading.value = false;
   }
 }
 

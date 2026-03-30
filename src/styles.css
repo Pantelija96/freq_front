@@ -302,6 +302,17 @@ small,
   color: #fff !important;
 }
 
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  opacity: 0.78;
+  color: rgba(15, 21, 34, 0.92) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+  opacity: 1;
+}
+
 .dataTables_filter label,
 .dataTables_length label {
   font-size: 0.95rem;
@@ -356,6 +367,29 @@ small,
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.02em;
+}
+
+.report-generator-page {
+  background: linear-gradient(180deg, rgba(18, 40, 79, 0.98), rgba(13, 28, 56, 0.98)) !important;
+}
+
+.report-generator-page .card-header,
+.report-generator-page .card-body {
+  background: transparent !important;
+}
+
+.report-generator-page .btn-primary,
+.report-generator-page .btn-primary:hover,
+.report-generator-page .btn-primary:focus {
+  background-color: rgba(238, 244, 255, 0.12) !important;
+  border-color: rgba(238, 244, 255, 0.18) !important;
+  color: #ffffff !important;
+}
+
+.report-generator-page .badge.bg-success,
+.report-generator-page .badge.bg-danger {
+  background-color: rgba(238, 244, 255, 0.14) !important;
+  color: #ffffff !important;
 }
 
 .command-name {

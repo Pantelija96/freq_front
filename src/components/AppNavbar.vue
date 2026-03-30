@@ -12,10 +12,11 @@
       </div>
 
       <div class="navbar-brand flex-1 flex-lg-0">
-        <RouterLink :to="brandTo" class="d-inline-flex align-items-center app-brand">
-          <img src="/freq-logo.jfif" alt="Freq logo" class="app-brand-logo" />
+        <RouterLink
+          :to="brandTo"
+          class="d-inline-flex align-items-center app-brand"
+        >
           <div>
-            <div class="app-brand-eyebrow">Freq Suite</div>
             <h3 class="mb-0 text-white">{{ brandTitle }}</h3>
           </div>
         </RouterLink>

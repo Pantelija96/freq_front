@@ -1,6 +1,6 @@
 <template>
   <DashboardLayout :breadcrumbs="breadcrumbs" active-key="report">
-    <div class="card bg-dark text-white mt-3">
+    <div class="card bg-dark text-white mt-3 report-generator-page">
       <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-3">
         <h6 class="mb-0">Generate Device Report</h6>
         <button
