@@ -57,9 +57,12 @@ Create a `.env` file based on `.env.example`.
 Example:
 
 ```env
+VITE_DEV_PORT=5173
 VITE_API_BASE_URL=https://127.0.0.1:3000/api
 VITE_WS_BASE_URL=wss://127.0.0.1:3000/dashboard
 ```
+
+`VITE_DEV_PORT` controls the local Vite development server port. In production, the built frontend should be served by nginx, so this setting is only relevant for development.
 
 For remote testing, point these values to your public backend host.
 

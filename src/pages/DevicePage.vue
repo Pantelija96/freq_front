@@ -12,7 +12,7 @@
         </button>
       </div>
 
-      <div class="card-body">
+      <div class="card-body one-device-table-card-body">
         <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
           <span class="text-muted">{{ selectedCount }} devices selected</span>
           <span class="text-white-50 small">
@@ -20,7 +20,10 @@
           </span>
         </div>
 
-        <table ref="devicesTableEl" class="table table-dark table-hover">
+        <table
+          ref="devicesTableEl"
+          class="table table-dark table-hover one-device-data-table"
+        >
           <thead>
             <tr>
               <th width="40">

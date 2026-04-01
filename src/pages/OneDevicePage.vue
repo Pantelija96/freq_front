@@ -490,8 +490,37 @@ function ensureCpuChart() {
         return lines.join("<br>");
       },
     },
-    legend: { textStyle: { color: "#fff" } },
+    legend: {
+      top: 10,
+      icon: "circle",
+      textStyle: { color: "#fff" },
+    },
     grid: { top: 50, left: 60, right: 30, bottom: 50 },
+    dataZoom: [
+      {
+        type: "inside",
+        zoomOnMouseWheel: true,
+        moveOnMouseMove: true,
+        moveOnMouseWheel: true,
+        minSpan: 5,
+      },
+      {
+        type: "slider",
+        bottom: 10,
+        height: 18,
+        borderColor: "rgba(111, 146, 232, 0.24)",
+        fillerColor: "rgba(62, 94, 167, 0.28)",
+        backgroundColor: "rgba(9, 19, 40, 0.85)",
+        handleStyle: {
+          color: "#6f92e8",
+          borderColor: "#adc2ff",
+        },
+        textStyle: {
+          color: "#d6e3ff",
+        },
+        minSpan: 5,
+      },
+    ],
     xAxis: {
       type: "time",
       axisLabel: { color: "#d6e3ff" },
@@ -513,15 +542,31 @@ function updateCpuChart(series) {
   }
 
   const adjustedSeries = buildSeparatedSeries(series);
-  const mappedSeries = adjustedSeries.map((entry) => ({
-    ...entry,
-    type: "line",
-    showSymbol: false,
-    lineStyle: {
-      width: 3,
-      color: entry.name.includes("Small") ? "#6f92e8" : "#80dcff",
-    },
-  }));
+  const mappedSeries = adjustedSeries.map((entry) => {
+    const color = entry.name.includes("Small") ? "#6f92e8" : "#80dcff";
+    const pointCount = Array.isArray(entry.data) ? entry.data.length : 0;
+
+    return {
+      ...entry,
+      type: "line",
+      symbol: "circle",
+      symbolSize: pointCount <= 1 ? 10 : 7,
+      showSymbol: pointCount <= 1,
+      lineStyle: {
+        width: 3,
+        color,
+      },
+      itemStyle: {
+        color,
+      },
+      emphasis: {
+        scale: true,
+        itemStyle: {
+          color,
+        },
+      },
+    };
+  });
 
   cpuChart.setOption({ series: mappedSeries });
   cpuChart.resize();

@@ -40,7 +40,7 @@
         <h6 class="mb-0">Devices</h6>
       </div>
 
-      <div class="card-body">
+      <div class="card-body one-device-table-card-body">
         <div class="mb-3 d-flex align-items-center gap-2 flex-wrap">
           <span class="text-muted">{{ selectedCount }} devices selected</span>
 
@@ -58,7 +58,10 @@
           </div>
         </div>
 
-        <table ref="devicesTableEl" class="table table-dark table-hover">
+        <table
+          ref="devicesTableEl"
+          class="table table-dark table-hover one-device-data-table"
+        >
           <thead>
             <tr>
               <th width="40">
@@ -124,6 +127,7 @@ const devices = {};
 const groups = {};
 const chartSeries = {};
 const collapsedGroups = {};
+const chartPalette = ["#3e5ea7", "#6f92e8", "#80dcff", "#5fd1a5", "#f5c26b", "#ff8f8f"];
 
 let devicesChart = null;
 let groupPieChart = null;
@@ -188,7 +192,11 @@ function initCharts() {
   devicesChart.setOption({
     backgroundColor: "#12284f",
     tooltip: { trigger: "axis" },
-    legend: { textStyle: { color: "#fff" } },
+    legend: {
+      top: 10,
+      icon: "circle",
+      textStyle: { color: "#fff" },
+    },
     xAxis: {
       type: "time",
       axisLabel: { color: "#d6e3ff" },
@@ -206,15 +214,29 @@ function initCharts() {
   groupPieChart.setOption({
     backgroundColor: "#12284f",
     tooltip: { trigger: "item" },
+    legend: {
+      top: 10,
+      left: "center",
+      icon: "circle",
+      textStyle: { color: "#fff" },
+    },
     series: [
       {
         type: "pie",
         radius: "70%",
-        color: ["#3e5ea7", "#6f92e8", "#1b335f", "#4f7de0", "#86b8ff"],
+        top: 28,
+        color: chartPalette,
         data: [],
       },
     ],
   });
+}
+
+function getGroupColor(groupName, index = 0) {
+  const groupNames = Object.keys(chartSeries);
+  const paletteIndex = groupNames.indexOf(groupName);
+  const resolvedIndex = paletteIndex >= 0 ? paletteIndex : index;
+  return chartPalette[resolvedIndex % chartPalette.length];
 }
 
 function updateChart() {
@@ -231,27 +253,50 @@ function updateChart() {
     }
   });
 
-  const series = Object.keys(chartSeries).map((groupName) => ({
-    name: groupName,
-    type: "line",
-    data: chartSeries[groupName],
-    smooth: false,
-    lineStyle: {
-      width: 3,
-    },
-    showSymbol: false,
-  }));
+  const series = Object.keys(chartSeries).map((groupName, index) => {
+    const color = getGroupColor(groupName, index);
+    const seriesData = chartSeries[groupName];
+
+    return {
+      name: groupName,
+      type: "line",
+      data: seriesData,
+      smooth: false,
+      lineStyle: {
+        width: 3,
+        color,
+      },
+      itemStyle: {
+        color,
+      },
+      symbol: "circle",
+      symbolSize: seriesData.length <= 1 ? 10 : 7,
+      showSymbol: seriesData.length <= 1,
+      emphasis: {
+        scale: true,
+        itemStyle: {
+          color,
+        },
+      },
+    };
+  });
 
   devicesChart.setOption({ series });
 }
 
 function updatePie() {
-  const data = Object.keys(groups).map((groupName) => ({
+  const data = Object.keys(groups).map((groupName, index) => ({
     name: groupName,
     value: groups[groupName],
+    itemStyle: {
+      color: getGroupColor(groupName, index),
+    },
   }));
 
   groupPieChart.setOption({
+    legend: {
+      data: data.map((entry) => entry.name),
+    },
     series: [{ data }],
   });
 }

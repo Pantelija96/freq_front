@@ -40,8 +40,21 @@
           </li>
 
           <li v-for="item in items" :key="item.label" class="nav-item">
+            <a
+              v-if="item.external && !item.disabled"
+              :href="item.to"
+              class="nav-link"
+              :class="{ active: activeKey === item.key }"
+              :target="item.newTab ? '_blank' : null"
+              :rel="item.newTab ? 'noopener noreferrer' : null"
+              @click="$emit('close-sidebar')"
+            >
+              <i :class="item.icon"></i>
+              <span>{{ item.label }}</span>
+            </a>
+
             <RouterLink
-              v-if="!item.disabled"
+              v-else-if="!item.disabled"
               :to="item.to"
               class="nav-link"
               :class="{ active: activeKey === item.key }"
@@ -68,6 +81,8 @@
 </template>
 
 <script setup>
+import { backendBaseUrl } from "../services/api";
+
 defineEmits(["close-sidebar"]);
 
 defineProps({
@@ -83,9 +98,10 @@ defineProps({
 
 const items = [
   { key: 'home', label: 'Dashboard', to: '/home', icon: 'ph-house', disabled: false },
-  { key: 'about', label: 'About', to: '/home', icon: 'ph-address-book', disabled: true },
-  { key: 'admin', label: 'Administration', to: '/home', icon: 'ph-pencil', disabled: true },
-  { key: 'docs', label: 'Documentation', to: '/home', icon: 'ph-stamp', disabled: true },
+  { key: 'about', label: 'About', to: '/about', icon: 'ph-address-book', disabled: false },
+  { key: 'admin', label: 'Administration', to: '/administration', icon: 'ph-pencil', disabled: false },
+  { key: 'docs', label: 'Documentation', to: `${backendBaseUrl}/downloads/docs/latest-pdf`, icon: 'ph-stamp', disabled: false, external: true, newTab: true },
+  { key: 'apk', label: 'Download APK', to: `${backendBaseUrl}/downloads/apk/latest`, icon: 'ph-download-simple', disabled: false, external: true },
   { key: 'licences', label: 'Licences', to: '/licences', icon: 'ph-link', disabled: false },
   { key: 'report', label: 'Report', to: '/device', icon: 'ph-database', disabled: false },
   { key: 'stats', label: 'Statistics', to: '/one-device', icon: 'ph-app-window', disabled: false }

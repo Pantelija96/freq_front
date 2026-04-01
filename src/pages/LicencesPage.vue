@@ -20,11 +20,6 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-if="!licences.length">
-              <td colspan="5" class="text-center text-white-50">
-                No licence keys available.
-              </td>
-            </tr>
             <tr v-for="licence in licences" :key="licence.id">
               <td class="font-monospace small">{{ licence.licence_key }}</td>
               <td>{{ licence.device_id }}</td>
@@ -84,6 +79,9 @@ function initTable() {
   licencesTable = window.$(licencesTableEl.value).DataTable({
     pageLength: 25,
     order: [[3, "asc"]],
+    language: {
+      emptyTable: "No licence keys available.",
+    },
   });
 }
 
