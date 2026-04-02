@@ -8,6 +8,7 @@ import OneDevicePage from '../pages/OneDevicePage.vue';
 import AboutPage from '../pages/AboutPage.vue';
 import AdminPage from '../pages/AdminPage.vue';
 import PublicDocsPage from '../pages/PublicDocsPage.vue';
+import ChangePasswordPage from '../pages/ChangePasswordPage.vue';
 import { isAuthenticated } from '../services/auth';
 
 const routes = [
@@ -53,6 +54,15 @@ const routes = [
     component: AdminPage,
     meta: {
       title: 'Administration',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/account/change-password',
+    name: 'change-password',
+    component: ChangePasswordPage,
+    meta: {
+      title: 'Change Password',
       requiresAuth: true
     }
   },

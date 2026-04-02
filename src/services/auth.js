@@ -78,3 +78,24 @@ export async function logout() {
 
   clearAuthSession();
 }
+
+export async function changePassword(currentPassword, newPassword, confirmPassword) {
+  const response = await fetch(buildApiUrl('/auth/change-password'), {
+    method: 'POST',
+    headers: getAuthHeaders({
+      'Content-Type': 'application/json'
+    }),
+    body: JSON.stringify({
+      currentPassword,
+      newPassword,
+      confirmPassword
+    })
+  });
+
+  const data = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Error(data?.error || 'Failed to change password');
+  }
+
+  return data;
+}

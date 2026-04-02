@@ -23,16 +23,33 @@
       </div>
 
       <div class="d-flex align-items-center gap-3 text-white">
-        <span v-if="displayName" class="small text-white-50">{{
-          displayName
-        }}</span>
-        <button
-          class="btn btn-light btn-sm"
-          type="button"
-          @click="handleLogout"
-        >
-          Logout
-        </button>
+        <div class="dropdown" v-if="displayName">
+          <button
+            class="btn btn-light btn-sm dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            {{ displayName }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+            <li>
+              <RouterLink class="dropdown-item" to="/account/change-password">
+                Change Password
+              </RouterLink>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <button
+                class="dropdown-item"
+                type="button"
+                @click="handleLogout"
+              >
+                Logout
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

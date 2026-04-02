@@ -288,6 +288,23 @@ small,
   color: rgba(0, 0, 0, 0.45);
 }
 
+.account-password-card .card-body,
+.account-password-card h5,
+.account-password-card .form-label,
+.account-password-card .form-text {
+  color: #161616 !important;
+}
+
+.account-password-form .form-control {
+  background-color: #ffffff !important;
+  color: #161616 !important;
+  border-color: rgba(62, 94, 167, 0.24) !important;
+}
+
+.account-password-form .form-control::placeholder {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
 .dataTables_length label,
 .dataTables_filter label,
 .dataTables_filter label input,
