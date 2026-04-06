@@ -129,6 +129,8 @@ VITE_API_BASE_URL=https://freq.local/api
 VITE_WS_BASE_URL=wss://freq.local/dashboard
 ```
 
+If `VITE_API_BASE_URL` and `VITE_WS_BASE_URL` are not set, the frontend will fall back to the current browser host and assume the backend is available on port `3000`. This makes local testing easier when switching between a domain and a direct IP address.
+
 ## Authentication
 
 The frontend logs in through:
